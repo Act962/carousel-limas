@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum VideoStatus {
+  PENDING  // upload em andamento
+  READY    // disponível para exibição no carrossel
+  FAILED   // upload ou processamento falhou
+  DELETED  // soft delete — rastreado mas não exibido
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+/// Vídeo do carrossel. storageKey será o path local por enquanto
+/// e a chave S3 quando o storage em nuvem for integrado.
+model Video {
+  id          String      @id @default(uuid())
+  title       String? // nome exibido no admin (opcional)
+  originalName String // nome original do arquivo enviado pelo usuário
+
+  /// Path/chave no storage. Local: "today/filename.mp4". S3: UUID.ext
+  storageKey  String      @unique
+
+  mimeType    String // ex: "video/mp4"
+  sizeBytes   BigInt // tamanho em bytes — base do controle de quota
+
+  // Metadados opcionais (populados pós-upload ou via processamento)
+  durationSeconds Float?
+  width           Int?
+  height          Int?
+
+  status       VideoStatus @default(PENDING)
+  displayOrder Int         @default(0) // ordem no carrossel
+  isActive     Boolean     @default(true) // exibir ou ocultar
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // preenchido no soft delete
+
+  @@index([status, isActive, displayOrder])
+  @@index([deletedAt])
+}
+
+/// Singleton (id sempre = 1) que mantém o contador de storage denormalizado.
+/// Atualizado atomicamente junto com cada insert/delete de vídeo.
+model StorageQuota {
+  id        Int    @id @default(1)
+  usedBytes BigInt @default(0)
+
+  /// Limite configurável — padrão 10 GB em bytes
+  limitBytes BigInt @default(10737418240)
+
+  updatedAt DateTime @updatedAt
+}
