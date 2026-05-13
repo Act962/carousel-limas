@@ -38,7 +38,7 @@ export function Carousel({ videos }: CarouselProps) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-black">
         <span className="text-white text-lg">
-          Nenhum vídeo encontrado em /public/today.
+          Nenhum vídeo disponível no momento.
         </span>
       </main>
     );

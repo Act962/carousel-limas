@@ -1,12 +1,12 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AddVideoDialog } from "@/components/admin/add-video-dialog";
-import { StorageBar } from "@/components/admin/storage-bar";
-import { VideoTable } from "@/components/admin/video-table";
+import { AddVideoDialog } from "@/features/admin/components/add-video-dialog";
+import { StorageBar } from "@/features/admin/components/storage-bar";
+import { VideoTable } from "@/features/admin/components/video-table";
 import { Button } from "@/components/ui/button";
 import { COOKIE_NAME, verifyToken } from "@/lib/auth";
 import { listAllVideos } from "@/lib/videos";
-import { logoutAction } from "./actions";
+import { logoutAction } from "../../features/auth/actions/logout";
 
 export default async function AdminPage() {
   const cookieStore = await cookies();
@@ -20,7 +20,9 @@ export default async function AdminPage() {
     <div className="flex min-h-screen flex-col">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-border px-8 py-5">
-        <span className="font-semibold tracking-tight">Limas Atacado — Admin</span>
+        <span className="font-semibold tracking-tight">
+          Limas Atacado — Admin
+        </span>
         <form action={logoutAction}>
           <Button type="submit" variant="ghost" size="sm">
             Sair
@@ -41,7 +43,8 @@ export default async function AdminPage() {
             <div>
               <h1 className="text-lg font-semibold">Vídeos do carrossel</h1>
               <p className="text-sm text-muted-foreground">
-                {videos.filter((v) => v.status !== "DELETED").length} vídeo(s) cadastrado(s)
+                {videos.filter((v) => v.status !== "DELETED").length} vídeo(s)
+                cadastrado(s)
               </p>
             </div>
             <AddVideoDialog />

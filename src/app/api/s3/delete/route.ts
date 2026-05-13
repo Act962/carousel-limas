@@ -19,10 +19,12 @@ export async function DELETE(req: Request) {
 
   const video = await getVideoById(videoId);
   if (!video) {
-    return NextResponse.json({ error: "Vídeo não encontrado." }, { status: 404 });
+    return NextResponse.json(
+      { error: "Vídeo não encontrado." },
+      { status: 404 },
+    );
   }
 
-  // Remove do R2 (ignora erro se já não existir)
   try {
     await S3.send(
       new DeleteObjectCommand({
@@ -30,11 +32,7 @@ export async function DELETE(req: Request) {
         Key: video.storageKey,
       }),
     );
-  } catch {
-    // arquivo pode já não existir no bucket — continua para soft delete
-  }
-
-  // Soft delete no banco + decrementa quota
+  } catch {}
   await deleteVideo(videoId);
 
   return NextResponse.json({ status: "deleted" });

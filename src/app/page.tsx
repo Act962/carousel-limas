@@ -1,14 +1,13 @@
-import { readdir } from "node:fs/promises";
-import path from "node:path";
 import { Carousel } from "@/components/carousel";
+import { useConstructUrl } from "@/hooks/use-construct-url";
+import { listAllVideos } from "@/lib/videos";
 
 export default async function Home() {
-  const dir = path.join(process.cwd(), "public", "today");
-  const files = await readdir(dir);
-  const videos = files
-    .filter((f) => /\.(mov|mp4|webm|ogg)$/i.test(f))
-    .sort()
-    .map((f) => `/today/${f}`);
+  const all = await listAllVideos();
+  const videos = all
+    .filter((v) => v.status === "READY" && v.isActive)
+    .sort((a, b) => a.displayOrder - b.displayOrder)
+    .map((v) => useConstructUrl(v.storageKey));
 
   return <Carousel videos={videos} />;
 }

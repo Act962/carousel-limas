@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginAction } from "./actions";
+import { loginAction } from "@/features/auth/actions/login";
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState(loginAction, null);
@@ -15,7 +15,9 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm border-border">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Limas Atacado</CardTitle>
-          <p className="text-sm text-muted-foreground">Acesso ao painel administrativo</p>
+          <p className="text-sm text-muted-foreground">
+            Acesso ao painel administrativo
+          </p>
         </CardHeader>
         <CardContent>
           <form action={formAction} className="flex flex-col gap-4">
