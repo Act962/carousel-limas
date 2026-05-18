@@ -1,4 +1,5 @@
 import type { Video, VideoStatus } from "@/generated/prisma/client";
+import { formatBytes } from "@/lib/format";
 import { db } from "./db";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
@@ -75,7 +76,7 @@ export async function listCarouselVideos(): Promise<Video[]> {
       isActive: true,
       deletedAt: null,
     },
-    orderBy: { displayOrder: "asc" },
+    orderBy: [{ displayOrder: "asc" }, { createdAt: "asc" }],
   });
 }
 
@@ -110,6 +111,16 @@ export async function createVideo(data: CreateVideoInput): Promise<Video> {
   }
 
   return db.$transaction(async (tx) => {
+    let displayOrder = data.displayOrder;
+    if (displayOrder === undefined) {
+      const last = await tx.video.findFirst({
+        where: { deletedAt: null },
+        orderBy: { displayOrder: "desc" },
+        select: { displayOrder: true },
+      });
+      displayOrder = last ? last.displayOrder + 1 : 0;
+    }
+
     const video = await tx.video.create({
       data: {
         title: data.title,
@@ -120,7 +131,7 @@ export async function createVideo(data: CreateVideoInput): Promise<Video> {
         durationSeconds: data.durationSeconds,
         width: data.width,
         height: data.height,
-        displayOrder: data.displayOrder ?? 0,
+        displayOrder,
         status: "PENDING",
       },
     });

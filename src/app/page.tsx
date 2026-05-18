@@ -1,13 +1,12 @@
 import { Carousel } from "@/components/carousel";
 import { useConstructUrl } from "@/hooks/use-construct-url";
-import { listAllVideos } from "@/lib/videos";
+import { listCarouselVideos } from "@/lib/videos";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const all = await listAllVideos();
-  const videos = all
-    .filter((v) => v.status === "READY" && v.isActive)
-    .sort((a, b) => a.displayOrder - b.displayOrder)
-    .map((v) => useConstructUrl(v.storageKey));
+  const rows = await listCarouselVideos();
+  const videos = rows.map((v) => useConstructUrl(v.storageKey));
 
   return <Carousel videos={videos} />;
 }
