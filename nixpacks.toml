@@ -1,0 +1,18 @@
+providers = ["node"]
+
+[variables]
+NODE_ENV = "production"
+NEXT_TELEMETRY_DISABLED = "1"
+
+[phases.install]
+cmds = [
+  "corepack enable",
+  "corepack prepare pnpm@10.15.0 --activate",
+  "pnpm install --frozen-lockfile --config.dangerouslyAllowAllBuilds=true",
+]
+
+[phases.build]
+cmds = ["pnpm build"]
+
+[start]
+cmd = "pnpm start"
