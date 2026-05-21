@@ -52,6 +52,13 @@
       "sharp",
       "unrs-resolver"
     ],
-    "onlyBuiltDependencies": ["@prisma/engines", "esbuild", "prisma", "sharp"]
+      "onlyBuiltDependencies": [
+      "inngest-cli",
+      "@prisma/engines",
+      "prisma",
+      "esbuild",
+      "protobufjs",
+      "sharp"
+    ]
   }
 }
