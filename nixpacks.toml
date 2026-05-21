@@ -8,7 +8,7 @@ NEXT_TELEMETRY_DISABLED = "1"
 cmds = [
   "corepack enable",
   "corepack prepare pnpm@10.15.0 --activate",
-  "pnpm install --frozen-lockfile --config.dangerouslyAllowAllBuilds=true",
+  "pnpm install --frozen-lockfile",
 ]
 
 [phases.build]
