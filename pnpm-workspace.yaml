@@ -1,5 +1,9 @@
-allowBuilds:
-  '@prisma/engines': true
-  esbuild: true
-  prisma: true
-  sharp: false
+onlyBuiltDependencies:
+  - "@prisma/engines"
+  - prisma
+  - esbuild
+  - sharp
+  - protobufjs
+
+ignoredBuiltDependencies:
+  - unrs-resolver
